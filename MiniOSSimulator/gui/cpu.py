@@ -8,6 +8,7 @@ from algorithms.fcfs import fcfs_scheduling
 from algorithms.sjf import sjf_scheduling
 from algorithms.srtf import srtf_scheduling
 from algorithms.priority import priority_scheduling
+from algorithms.priority_preemptive import priority_preemptive_scheduling
 from algorithms.rr import rr_scheduling
 from gui.compare import CompareWindow
 
@@ -79,7 +80,7 @@ class CPUPage(tb.Frame):
         self.algo_var = tb.StringVar(value="FCFS")
         self.algo_menu = tb.Combobox(
             bar, textvariable=self.algo_var, state="readonly", width=24,
-            values=["FCFS", "SJF (Non-Preemptive)", "SJF (Preemptive)", "Priority (Non-Preemptive)", "Round Robin"]
+            values=["FCFS", "SJF (Non-Preemptive)", "SJF (Preemptive)", "Priority (Non-Preemptive)", "Priority (Preemptive)", "Round Robin"]
         )
         self.algo_menu.grid(row=0, column=1, padx=5, pady=5, sticky="w")
         self.algo_menu.bind("<<ComboboxSelected>>", lambda e: self._refresh_column_visibility())
@@ -437,7 +438,7 @@ class CPUPage(tb.Frame):
         algo = self.algo_var.get()
 
         # Priority Visibility
-        show_priority = (algo == "Priority (Non-Preemptive)")
+        show_priority = algo.startswith("Priority")
         if show_priority:
             self.hdr_pri.grid(row=0, column=3, padx=5, pady=5, sticky="ew")
             for idx, (_, _, _, pri_e) in enumerate(self.row_widgets):
@@ -505,8 +506,10 @@ class CPUPage(tb.Frame):
                 result = sjf_scheduling(processes)
             elif algo == "SJF (Preemptive)":
                 result = srtf_scheduling(processes)
-            elif algo.startswith("Priority"):
+            elif algo == "Priority (Non-Preemptive)":
                 result = priority_scheduling(processes)
+            elif algo == "Priority (Preemptive)":
+                result = priority_preemptive_scheduling(processes)
             else:
                 try:
                     quantum = int(self.quantum_var.get().strip())

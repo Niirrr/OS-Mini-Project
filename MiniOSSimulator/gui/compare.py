@@ -17,6 +17,7 @@ from algorithms.fcfs     import fcfs_scheduling
 from algorithms.sjf      import sjf_scheduling
 from algorithms.srtf     import srtf_scheduling
 from algorithms.priority import priority_scheduling
+from algorithms.priority_preemptive import priority_preemptive_scheduling
 from algorithms.rr       import rr_scheduling
 
 
@@ -24,14 +25,15 @@ from algorithms.rr       import rr_scheduling
 _BG_ROW   = "#1e2030"
 _BG_BEST  = "#1a3a1e"
 _FG_BEST  = "#a6e3a1"
-_BAR_COLS = ["#89b4fa", "#f38ba8", "#a6e3a1", "#f9e2af", "#cba6f7"]
+_BAR_COLS = ["#89b4fa", "#f38ba8", "#a6e3a1", "#f9e2af", "#cba6f7", "#fab387"]
 
 # ── algorithm registry ───────────────────────────────────────────────────
 _ALGORITHMS = [
     ("FCFS",                 lambda p, q: fcfs_scheduling(p)),
     ("SJF (Non-Preemptive)", lambda p, q: sjf_scheduling(p)),
     ("SRTF",                 lambda p, q: srtf_scheduling(p)),
-    ("Priority",             lambda p, q: priority_scheduling(p)),
+    ("Priority (Non-Prem.)", lambda p, q: priority_scheduling(p)),
+    ("Priority (Preempt.)",  lambda p, q: priority_preemptive_scheduling(p)),
     ("Round Robin",          lambda p, q: rr_scheduling(p, q)),
 ]
 
@@ -92,8 +94,8 @@ class CompareWindow(tb.Toplevel):
 
         tb.Label(
             hdr,
-            text="All five algorithms evaluated on identical process inputs   ·   ★ = lowest avg waiting time",
-            font=("Segoe UI", 9), bootstyle="secondary"
+            text="All six algorithms evaluated on identical process inputs   ·   ★ = lowest avg waiting time",
+            font=("Segoe UI", 9), foreground="#a6adc8"
         ).pack(side="left", padx=16, pady=(5, 0))
 
         tb.Separator(self).pack(fill="x", padx=20, pady=(2, 0))
@@ -195,6 +197,8 @@ class CompareWindow(tb.Toplevel):
         tick_labels = [
             n.replace(" (Non-Preemptive)", "\n(Non-Preemptive)")
              .replace("Round Robin",       "Round\nRobin")
+             .replace("Priority (Non-Prem.)", "Priority\n(Non-Prem.)")
+             .replace("Priority (Preempt.)", "Priority\n(Preempt.)")
             for n in names
         ]
 
